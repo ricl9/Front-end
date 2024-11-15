@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload File</h1>
+        <form id="uploadForm">
+            <input type="file" id="fileInput" required>
+            <input type="text" id="cityNameInput" placeholder="Enter city name if location fails" style="display:none;">
+            <button type="submit">Upload</button>
+        </form>
+        <div id="filesList">
+            <h2>Uploaded Files</h2>
+            <ul id="fileList"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
