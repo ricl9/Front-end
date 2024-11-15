@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import os
 import re
 
@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return '<h1>Hello Totoro!</h1><img src="http://helloflask.com/totoro.gif">'
+	return render_template("index.html")	
 
 
 @app.route('/upload', methods=["POST"])
@@ -24,7 +24,7 @@ def upload():
 	#check dirname
 	dirname = request.args.get("city")
 	filename = str(file.filename)
-
+	print(dirname)
 	if not dirname or len(str(dirname)) > 255 or not is_valid_city(dirname):
 		return "Fail, city name illegal"
 

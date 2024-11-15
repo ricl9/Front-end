@@ -10,10 +10,10 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     
     function uploadFile(city) {
         const formData = new FormData();
-        const md5 = calculateMD5(file);
+        // const md5 = calculateMD5(file);
         formData.append('file', fileInput);
         formData.append('city', city);
-        formData.append('md5', md5);
+        // formData.append('md5', md5);
 
         fetch('/upload', {
             method: 'POST',
