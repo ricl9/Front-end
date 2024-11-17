@@ -21,7 +21,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.code == 200) {
                 alert('File uploaded successfully!');
                 document.getElementById('cityNameInput').style.display = 'none';
                 listFiles();
