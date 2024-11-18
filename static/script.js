@@ -1,3 +1,6 @@
+const fs = require('fs');
+const crypto = require('crypto');
+
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault();
     const fileInput = document.getElementById('fileInput').files[0];
@@ -10,7 +13,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     
     function uploadFile(city) {
         const formData = new FormData();
-        // const md5 = calculateMD5(file);
+        // const md5 = getMD5Hash(file);
         formData.append('file', fileInput);
         formData.append('city', city);
         // formData.append('md5', md5);
@@ -58,13 +61,23 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         uploadFile(cityName);
     }
 });
+function getMD5Hash(file) {
+    return new Promise((resolve, reject) => {
+        const hash = crypto.createHash('md5');
+        const stream = fs.createReadStream(filePath);
 
-async function calculateMD5(file) {
-    const arrayBuffer = await file.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest('MD5', arrayBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
+        stream.on('data', (data) => {
+            hash.update(data);
+        });
+
+        stream.on('end', () => {
+            resolve(hash.digest('hex'));
+        });
+
+        stream.on('error', (err) => {
+            reject(err);
+        });
+    });
 }
 
 function listFiles() {
