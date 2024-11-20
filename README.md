@@ -42,6 +42,5 @@ This repository contains a simple file upload server built using Flask. The serv
 
 ## Todos
 
-1. Show uploaded files (both frontend and backend)
-2. Md5 checksum
-3. Test cases
+1. Md5 checksum
+2. Test cases
