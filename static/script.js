@@ -1,11 +1,13 @@
-const fs = require('fs');
-const crypto = require('crypto');
+//const fs = require('fs');
+//const crypto = require('crypto');
+
+console.log("DEBUG: SCRIPT LOADED");
 
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault();
     const fileInput = document.getElementById('fileInput').files[0];
     if (!fileInput) {
-        alert("Please select a file.");
+        alert("ERROR: Please select a file.");
         return;
     }
 
@@ -61,24 +63,24 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         uploadFile(cityName);
     }
 });
-function getMD5Hash(file) {
-    return new Promise((resolve, reject) => {
-        const hash = crypto.createHash('md5');
-        const stream = fs.createReadStream(filePath);
-
-        stream.on('data', (data) => {
-            hash.update(data);
-        });
-
-        stream.on('end', () => {
-            resolve(hash.digest('hex'));
-        });
-
-        stream.on('error', (err) => {
-            reject(err);
-        });
-    });
-}
+//function getMD5Hash(file) {
+//    return new Promise((resolve, reject) => {
+//        const hash = crypto.createHash('md5');
+//        const stream = fs.createReadStream(filePath);
+//
+//        stream.on('data', (data) => {
+//            hash.update(data);
+//        });
+//
+//        stream.on('end', () => {
+//            resolve(hash.digest('hex'));
+//        });
+//
+//        stream.on('error', (err) => {
+//            reject(err);
+//        });
+//    });
+//}
 
 function listFiles() {
     fetch('/files')

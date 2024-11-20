@@ -7,11 +7,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def main_page():
+	print("MAIN PAGE CALLED", flush=True)
 	return render_template("index.html")	
 
 
 @app.route('/upload', methods=["POST"])
 def upload():
+	print("UPLOAD CALLED", flush=True)
 	file = request.files['file']
 	print("file length is {}".format(request.content_length), flush=True)
 
@@ -34,7 +36,7 @@ def upload():
 
 	filepath = os.path.join(dirpath, filename)
 
-	print("saving file to {}".format(filepath))
+	print("saving file to {}".format(filepath), flush=True)
 	file.save(filepath)
 
 	#TODO: md5 
