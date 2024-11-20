@@ -65,4 +65,4 @@ def build_return_value(code, msg):
 	return jsonify(data)
 
 def is_valid_dir(city):
-	return re.match(r'^[a-zA-Z0-9_\-\.]+$', city) is not None
+	return re.match(r'^[a-zA-Z0-9_\-\. ]+$', city) is not None
