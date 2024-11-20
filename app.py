@@ -25,7 +25,7 @@ def upload():
 	city_name = request.form["city"]#request.args.get("city")
 	filename = str(file.filename)
 	print(city_name)
-	if not city_name or len(str(city_name)) > 255 or not is_valid_dir(city_name):
+	if not is_city_name_valid(city_name):
 		return build_return_value(402, "City name illegal")
 
 	city_name = city_name.capitalize()
@@ -59,6 +59,20 @@ def get_files():
 
 	#print(result)
 	return build_return_value(200, result)
+
+@app.route('/city_check', methods=["POST"])
+def check_city_name():
+	city_name = request.form["city"]#request.args.get("city")
+	if is_city_name_valid(city_name):
+		return build_return_value(200, "")
+	else:
+		return build_return_value(501, "City name illegal")
+
+
+def is_city_name_valid(city_name):
+	if not city_name or len(str(city_name)) > 255 or not is_valid_dir(city_name):
+		return False
+	return True
 
 def build_return_value(code, msg):
 	data = {"code":str(code), "message":msg}
