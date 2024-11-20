@@ -7,13 +7,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def main_page():
-	print("MAIN PAGE CALLED", flush=True)
+	#print("MAIN PAGE CALLED", flush=True)
 	return render_template("index.html")	
 
 
 @app.route('/upload', methods=["POST"])
 def upload():
-	print("UPLOAD CALLED", flush=True)
+	#print("UPLOAD CALLED", flush=True)
 	file = request.files['file']
 	print("file length is {}".format(request.content_length), flush=True)
 
@@ -43,6 +43,22 @@ def upload():
 
 	return build_return_value(200, "")
 
+@app.route('/files')
+def get_files():
+	#print("GETFILES CALLED")
+
+	filespath = "./files/"
+	result = {}
+	for entry in os.scandir(filespath):
+		if entry.is_dir():
+			files_in_dir = []
+			for subentry in os.scandir(entry.path):
+				if subentry.is_file():
+					files_in_dir.append(subentry.name)
+			result[entry.name] = files_in_dir
+
+	#print(result)
+	return build_return_value(200, result)
 
 def build_return_value(code, msg):
 	data = {"code":str(code), "message":msg}

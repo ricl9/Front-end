@@ -63,6 +63,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         uploadFile(cityName);
     }
 });
+
 //function getMD5Hash(file) {
 //    return new Promise((resolve, reject) => {
 //        const hash = crypto.createHash('md5');
@@ -85,14 +86,25 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
 function listFiles() {
     fetch('/files')
         .then(response => response.json())
-        .then(files => {
+        .then(responsejson => responsejson.message)
+        .then(citiesobj => {
+            //console.log(citiesobj);
+            //console.log(typeof citiesobj);
+
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '';
-            files.forEach(file => {
-                const li = document.createElement('li');
-                li.textContent = file;
-                fileList.appendChild(li);
-            });
+
+            Object.keys(citiesobj).forEach(city => {
+                const newheading = document.createElement('h4');
+                newheading.textContent = city;
+                fileList.appendChild(newheading);
+                //console.log(citiesobj[city])
+                citiesobj[city].forEach(file => {
+                    const newlistentry = document.createElement('li');
+                    newlistentry.textContent = file;
+                    fileList.appendChild(newlistentry);
+                })
+            })
         });
 }
 
