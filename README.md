@@ -44,3 +44,6 @@ This repository contains a simple file upload server built using Flask. The serv
 
 1. Md5 checksum
 2. Test cases
+
+# Test result
+https://docs.google.com/spreadsheets/d/1ZhsIjSrQZfqTYPAW9eVbuJvHnjNMRwyTETHD0rOdnhM/edit?gid=0#gid=0
