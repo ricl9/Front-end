@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import os
 import re
+import hashlib
 
 
 app = Flask(__name__)
@@ -29,6 +30,11 @@ def upload():
 		return build_return_value(402, "City name illegal")
 
 	city_name = city_name.capitalize()
+
+	#verify_hash
+	frontend_hash = request.form["hash"]
+	if not verify_hash(file, frontend_hash):
+		return build_return_value(409, "Hash Verification Failed: Hashes do not match")
 
 	# save file
 	dirpath = os.path.join(os.path.dirname(__file__), "files", city_name)
@@ -68,6 +74,13 @@ def check_city_name():
 	else:
 		return build_return_value(501, "City name illegal")
 
+def verify_hash(file, hash_from_frontend):
+	hasher = hashlib.new("sha256")
+	data = file.read()
+	hasher.update(data)
+	digest = hasher.hexdigest()
+	verified = hash_from_frontend==digest
+	return verified
 
 def is_city_name_valid(city_name):
 	if not city_name or len(str(city_name)) > 255 or not is_valid_dir(city_name):

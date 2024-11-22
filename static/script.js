@@ -13,12 +13,12 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
 
     let cityName = document.getElementById('cityNameInput').value;
     
-    function uploadFile(city) {
+    function uploadFile(city, hash) {
+        console.log(hash);
         const formData = new FormData();
-        // const md5 = getMD5Hash(file);
         formData.append('file', fileInput);
         formData.append('city', city);
-        // formData.append('md5', md5);
+        formData.append('hash', hash);
 
         fetch('/upload', {
             method: 'POST',
@@ -37,51 +37,37 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         .catch(error => console.error('Error:', error));
     }
 
-    if (!cityName) {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        cityName = data.address.city || data.address.town || data.address.village || data.address.state;
-                        if (cityName) {
-                            uploadFile(cityName);
-                        } else {
+    gethash(fileInput)
+    .then(hash => {
+        if (!cityName) {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            cityName = data.address.city || data.address.town || data.address.village || data.address.state;
+                            if (cityName) {
+                                uploadFile(cityName, hash);
+                            } else {
+                                document.getElementById('cityNameInput').style.display = 'block';
+                            }
+                        })
+                        .catch(() => {
                             document.getElementById('cityNameInput').style.display = 'block';
-                        }
-                    })
-                    .catch(() => {
-                        document.getElementById('cityNameInput').style.display = 'block';
-                    });
-            }, function() {
+                        });
+                }, function() {
+                    document.getElementById('cityNameInput').style.display = 'block';
+                });
+            } else {
                 document.getElementById('cityNameInput').style.display = 'block';
-            });
+            }
         } else {
-            document.getElementById('cityNameInput').style.display = 'block';
+            uploadFile(cityName, hash);
         }
-    } else {
-        uploadFile(cityName);
-    }
+    })
 });
 
-//function getMD5Hash(file) {
-//    return new Promise((resolve, reject) => {
-//        const hash = crypto.createHash('md5');
-//        const stream = fs.createReadStream(filePath);
-//
-//        stream.on('data', (data) => {
-//            hash.update(data);
-//        });
-//
-//        stream.on('end', () => {
-//            resolve(hash.digest('hex'));
-//        });
-//
-//        stream.on('error', (err) => {
-//            reject(err);
-//        });
-//    });
-//}
+document.addEventListener('DOMContentLoaded', listFiles);
 
 function listFiles() {
     fetch('/files')
@@ -106,6 +92,20 @@ function listFiles() {
                 })
             })
         });
-}
+};
 
-document.addEventListener('DOMContentLoaded', listFiles);
+function gethash(in_file) {
+    var hashprom = new Promise(resolve => {
+        var reader = new FileReader();
+        reader.onload = e => {
+            var data = e.target.result;
+            window.crypto.subtle.digest("SHA-256", data).then(hashBuffer => {
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join('');
+                resolve(hashHex);
+            })
+        }
+        reader.readAsArrayBuffer(in_file);
+    });
+    return hashprom;
+};
