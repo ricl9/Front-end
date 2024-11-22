@@ -80,27 +80,3 @@ def build_return_value(code, msg):
 
 def is_valid_dir(city):
 	return re.match(r'^[a-zA-Z0-9_\-\. ]+$', city) is not None
-
-from flask import Flask, request
-import hashlib
-
-app = Flask(__name__)
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return "No file part", 400
-
-    file = request.files['file']  # Get the uploaded file
-    if file:
-        # Read the file content (binary)
-        file_content = file.read()
-
-        # Calculate the MD5 checksum of the file
-        md5_checksum = hashlib.md5(file_content).hexdigest()
-
-        return md5_checksum  # Return the checksum to the frontend
-    return "File not received", 400
-
-if __name__ == '__main__':
-    app.run(debug=True)  # Start the Flask server
