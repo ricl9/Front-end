@@ -38,9 +38,18 @@ def upload():
 
 	# save file
 	dirpath = os.path.join(os.path.dirname(__file__), "files", city_name)
-	os.makedirs(dirpath, exist_ok=True)
-
 	filepath = os.path.join(dirpath, filename)
+
+	# check if there is file with same name and hash
+	if os.path.exists(filepath):
+		with open(filepath, 'rb') as exist_file:
+			if verify_hash(exist_file, frontend_hash): # same hash
+				return build_return_value(410, "Same file already exists")
+			else:
+				return build_return_value(411, f"A {filename} file already exists in {city_name}. Please rename and upload again")
+
+
+	os.makedirs(dirpath, exist_ok=True)
 
 	print("saving file to {}".format(filepath), flush=True)
 	file.save(filepath)
@@ -77,6 +86,7 @@ def check_city_name():
 def verify_hash(file, hash_from_frontend):
 	hasher = hashlib.new("sha256")
 	data = file.read()
+	file.seek(0)
 	hasher.update(data)
 	digest = hasher.hexdigest()
 	verified = hash_from_frontend==digest
